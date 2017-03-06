@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Julián Urbano" />
+
+<meta name="date" content="2017-03-06" />
+
+<title>gt4ireval: Generalizability Theory for Information Retrieval Evaluation</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">gt4ireval: Generalizability Theory for Information Retrieval Evaluation</h1>
+<h4 class="author"><em>Julián Urbano</em></h4>
+<h4 class="date"><em>2017-03-06</em></h4>
+
+
+
+<p><code>gt4ireval</code> is a package to measure the reliability of an Information Retrieval test collection. It allows users to estimate reliability using Generalizability Theory <span class="citation">(Brennan 2001)</span> and map those estimates onto well-known indicators such as Kendall <span class="math inline">\(\tau\)</span> correlation or sensitivity. For background information and details, the reader is referred to <span class="citation">(Urbano, Marrero, and Martín 2013)</span>.</p>
+<div id="loading-data" class="section level2">
+<h2>Loading Data</h2>
+<p>Once loaded, <code>gt4ireval</code> needs initial evaluation data to run a G-study and the corresponding D-study. These data need to be in a standard data frame or matrix, where columns correspond to systems and rows correspond to queries.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> For this vignette, let us use data from the <a href="http://trec.nist.gov">TREC-3 Ad hoc track</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(adhoc3)</code></pre></div>
+<pre><code>## [1] 50 40</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">adhoc3[<span class="dv">1</span>:<span class="dv">5</span>, <span class="dv">1</span>:<span class="dv">5</span>]</code></pre></div>
+<pre><code>##     sys1   sys2   sys3   sys4   sys5
+## 1 0.2830 0.5163 0.4810 0.5737 0.5184
+## 2 0.0168 0.5442 0.3987 0.2964 0.6115
+## 3 0.0746 0.2769 0.3002 0.2459 0.3803
+## 4 0.1828 0.6622 0.6164 0.4291 0.6556
+## 5 0.0181 0.3670 0.3762 0.1095 0.2465</code></pre>
+<p>If your data is transposed (i.e. columns correspond to queries and rows correspond to systems), you can get the correct format with the <code>t</code> function: <code>data &lt;- t(data)</code>.</p>
+</div>
+<div id="g-study" class="section level2">
+<h2>G-Study</h2>
+<p>To run a G-study with the initial data we have, we simply call function <code>g.study</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">gstudy</span>(adhoc3)</code></pre></div>
+<pre><code>## 
+## Summary of G-Study
+## 
+##                  Systems     Queries Interaction
+##              ----------- ----------- -----------
+## Variance       0.0071668    0.022642     0.01092
+## Variance(%)       17.596      55.593      26.811
+## ---
+## Mean Sq.         0.36926     0.91661     0.01092
+## Sample size           40          50        2000</code></pre>
+<p>Additionally, we can tell the function to ignore the systems with lowest average effectiveness scores by setting parameter <code>drop</code>. For instance, we can ignore the bottom 25% of systems.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">adhoc3.g &lt;-<span class="st"> </span><span class="kw">gstudy</span>(adhoc3, <span class="dt">drop =</span> .<span class="dv">25</span>)
+adhoc3.g</code></pre></div>
+<pre><code>## 
+## Summary of G-Study
+## 
+##                  Systems     Queries Interaction
+##              ----------- ----------- -----------
+## Variance       0.0028117    0.028093    0.010152
+## Variance(%)       6.8482      68.425      24.727
+## ---
+## Mean Sq.         0.15074     0.85296    0.010152
+## Sample size           30          50        1500</code></pre>
+<p>The summary shows the estimated variance components: variance due to the system effect <span class="math inline">\(\hat\sigma_s^2=0.0028\)</span>, due to the query effect <span class="math inline">\(\hat\sigma_q^2=0.0281\)</span>, and due to the system-query interaction effect <span class="math inline">\(\hat\sigma_e^2=0.0102\)</span>. The second row shows the same values but as a fraction of the total variance. The third row shows the estimated Mean Squares for each component, and finally the sample size in each case. In our example, we have 30 systems and 50 queries as initial data.</p>
+</div>
+<div id="d-study" class="section level2">
+<h2>D-Study</h2>
+<p>The results from the G-study above can now be used to run a D-study. First, let us estimate the stability of the current collection (50 queries).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dstudy</span>(adhoc3.g)</code></pre></div>
+<pre><code>## 
+## Summary of D-Study
+## 
+## Call:
+##     queries = 50 
+##   stability = 0.95 
+##       alpha = 0.025 
+## 
+## Stability:
+##                                            Erho2                                   Phi
+##              -----------------------------------   -----------------------------------
+##      Queries    Expected       Lower       Upper      Expected       Lower       Upper
+##  ----------- ----------- ----------- -----------   ----------- ----------- -----------
+##           50     0.93265     0.89311     0.96287       0.78613     0.66141     0.88039 
+## 
+## Required number of queries:
+##                                            Erho2                                   Phi
+##              -----------------------------------   -----------------------------------
+##    Stability    Expected       Lower       Upper      Expected       Lower       Upper
+##  ----------- ----------- ----------- -----------   ----------- ----------- -----------
+##         0.95          69          37         114           259         130         487</code></pre>
+<p>The summary first shows how <code>dstudy</code> was called. In particular, it tells us that the target number of queries is <span class="math inline">\(n_q'=50\)</span> (set by default from the G-study initial data), the target stability is <span class="math inline">\(\pi=0.95\)</span> (set by default), and the confidence level is <span class="math inline">\(\alpha=0.025\)</span> (set by default). Next are the estimated stability scores; the relative stability with 50 queries is <span class="math inline">\(\text{E}\hat\rho^2=0.93265\)</span> with a 95% confidence interval of <span class="math inline">\([0.89311, 0.96287]\)</span>, and the absolute stability is <span class="math inline">\(\hat\Phi=0.78613\)</span> with a 95% confidence interval of <span class="math inline">\([0.66141, 0.88039]\)</span>. Regarding the required number of queries to reach the target stability, the estimate is <span class="math inline">\(\hat{n}_q'=69\)</span> with a 95% confidence interval of <span class="math inline">\([37, 114]\)</span> to reach <span class="math inline">\(\text{E}\rho^2=\pi\)</span>, and <span class="math inline">\(\hat{n}_q'=259\)</span> with a 95% confidence interval of <span class="math inline">\([130, 487]\)</span> to reach <span class="math inline">\(\Phi=\pi\)</span>.</p>
+<p>Function <code>dstudy</code> can be called with multiple values for <span class="math inline">\(n_q'\)</span>, <span class="math inline">\(\pi\)</span> and <span class="math inline">\(\alpha\)</span> to study trends. For instance, we can indicate several query set sizes by setting parameter <code>queries</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dstudy</span>(adhoc3.g, <span class="dt">queries =</span> <span class="kw">seq</span>(<span class="dv">20</span>, <span class="dv">200</span>, <span class="dv">20</span>))</code></pre></div>
+<pre><code>## 
+## Summary of D-Study
+## 
+## Call:
+##     queries = 20 40 60 80 100 120 140 160 180 200 
+##   stability = 0.95 
+##       alpha = 0.025 
+## 
+## Stability:
+##                                            Erho2                                   Phi
+##              -----------------------------------   -----------------------------------
+##      Queries    Expected       Lower       Upper      Expected       Lower       Upper
+##  ----------- ----------- ----------- -----------   ----------- ----------- -----------
+##           20     0.84707     0.76971     0.91208        0.5952     0.43864     0.74647 
+##           40     0.91721     0.86987     0.95402       0.74624      0.6098     0.85483 
+##           60     0.94324     0.90931     0.96887       0.81519     0.70097      0.8983 
+##           80     0.95682     0.93041     0.97647       0.85468     0.75761     0.92174 
+##          100     0.96515     0.94354     0.98109       0.88026     0.79621     0.93639 
+##          120     0.97079      0.9525     0.98419       0.89819      0.8242     0.94643 
+##          140     0.97486     0.95901     0.98642       0.91144     0.84543     0.95373 
+##          160     0.97793     0.96395     0.98809       0.92165     0.86209     0.95927 
+##          180     0.98033     0.96783      0.9894       0.92974      0.8755     0.96363 
+##          200     0.98227     0.97095     0.99045       0.93632     0.88654     0.96715 
+## 
+## Required number of queries:
+##                                            Erho2                                   Phi
+##              -----------------------------------   -----------------------------------
+##    Stability    Expected       Lower       Upper      Expected       Lower       Upper
+##  ----------- ----------- ----------- -----------   ----------- ----------- -----------
+##         0.95          69          37         114           259         130         487</code></pre>
+<p>The output above shows the estimated stability scores, with confidence intervals, for various query set sizes. For example, we have <span class="math inline">\(\text{E}\hat\rho^2=0.96515\)</span> with 100 queries, and <span class="math inline">\(\hat\Phi\in[0.88654, 0.96715]\)</span> with 95% confidence when having 200 queries. Similarly, we may indicate several target stability scores by setting parameter <code>stability</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dstudy</span>(adhoc3.g, <span class="dt">stability =</span> <span class="kw">c</span>(<span class="fl">0.8</span>, <span class="fl">0.85</span>, <span class="fl">0.9</span>, <span class="fl">0.95</span>, <span class="fl">0.97</span>, <span class="fl">0.99</span>))</code></pre></div>
+<pre><code>## 
+## Summary of D-Study
+## 
+## Call:
+##     queries = 50 
+##   stability = 0.8 0.85 0.9 0.95 0.97 0.99 
+##       alpha = 0.025 
+## 
+## Stability:
+##                                            Erho2                                   Phi
+##              -----------------------------------   -----------------------------------
+##      Queries    Expected       Lower       Upper      Expected       Lower       Upper
+##  ----------- ----------- ----------- -----------   ----------- ----------- -----------
+##           50     0.93265     0.89311     0.96287       0.78613     0.66141     0.88039 
+## 
+## Required number of queries:
+##                                            Erho2                                   Phi
+##              -----------------------------------   -----------------------------------
+##    Stability    Expected       Lower       Upper      Expected       Lower       Upper
+##  ----------- ----------- ----------- -----------   ----------- ----------- -----------
+##          0.8          15           8          24            55          28         103 
+##         0.85          21          11          34            78          39         146 
+##          0.9          33          18          54           123          62         231 
+##         0.95          69          37         114           259         130         487 
+##         0.97         117          63         194           440         220         828 
+##         0.99         358         191         593          1347         673        2534</code></pre>
+<p>The output above shows that the estimated number of queries to reach <span class="math inline">\(\text{E}\rho^2=0.97\)</span> is 117, while 123 are required to reach <span class="math inline">\(\Phi=0.9\)</span>. Finally, we can also indicate several confidence levels for the computation of confidence intervals by setting parameter <code>alpha</code>.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dstudy</span>(adhoc3.g, <span class="dt">alpha =</span> <span class="kw">c</span>(<span class="fl">0.005</span>, <span class="fl">0.025</span>, <span class="fl">0.05</span>))</code></pre></div>
+<pre><code>## 
+## Summary of D-Study
+## 
+## Call:
+##     queries = 50 
+##   stability = 0.95 
+##       alpha = 0.005 0.025 0.05 
+## 
+## Stability:
+##                                            Erho2                                   Phi
+##              -----------------------------------   -----------------------------------
+##        Alpha    Expected       Lower       Upper      Expected       Lower       Upper
+##  ----------- ----------- ----------- -----------   ----------- ----------- -----------
+##        0.005     0.93265     0.87737     0.96967       0.78613     0.61466      0.9023 
+##        0.025     0.93265     0.89311     0.96287       0.78613     0.66141     0.88039 
+##         0.05     0.93265     0.90062     0.95901       0.78613     0.68417     0.86796 
+## 
+## Required number of queries:
+##                                            Erho2                                   Phi
+##              -----------------------------------   -----------------------------------
+##        Alpha    Expected       Lower       Upper      Expected       Lower       Upper
+##  ----------- ----------- ----------- -----------   ----------- ----------- -----------
+##        0.005          69          30         133           259         103         596 
+##        0.025          69          37         114           259         130         487 
+##         0.05          69          41         105           259         145         439</code></pre>
+<p>The summary above shows that with 50 queries a 99% confidence interval for <span class="math inline">\(\text{E}\rho^2\)</span> is <span class="math inline">\([0.87737, 0.96967]\)</span>, and a 90% confidence interval on the number of queries to reach <span class="math inline">\(\Phi=0.95\)</span> is <span class="math inline">\([145, 439]\)</span>.</p>
+</div>
+<div id="using-the-returned-objects" class="section level2">
+<h2>Using the Returned Objects</h2>
+<p>Both <code>gstudy</code> and <code>dstudy</code> return objects with all results from the analysis so they can be used in subsequent computations. In fact, object <code>adhoc3.g</code> above contains all the G-study results, and it is provided to function <code>d.study</code>. The full list of available data in both objects can be obtained with function <code>names</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">adhoc3.g &lt;-<span class="st"> </span><span class="kw">gstudy</span>(adhoc3, <span class="dt">drop =</span> <span class="fl">0.25</span>)
+<span class="kw">names</span>(adhoc3.g)</code></pre></div>
+<pre><code>## [1] &quot;n.s&quot;   &quot;n.q&quot;   &quot;var.s&quot; &quot;var.q&quot; &quot;var.e&quot; &quot;em.s&quot;  &quot;em.q&quot;  &quot;em.e&quot;  &quot;call&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">adhoc3.g$var.s</code></pre></div>
+<pre><code>## [1] 0.002811699</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">adhoc3.d &lt;-<span class="st"> </span><span class="kw">dstudy</span>(adhoc3.g, <span class="dt">queries =</span> <span class="kw">seq</span>(<span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">10</span>), <span class="dt">stability =</span> <span class="kw">seq</span>(<span class="fl">0.5</span>, <span class="fl">0.99</span>, .<span class="dv">05</span>))
+<span class="kw">names</span>(adhoc3.d)</code></pre></div>
+<pre><code>##  [1] &quot;Erho2&quot;         &quot;Phi&quot;           &quot;n.q_Erho2&quot;     &quot;n.q_Phi&quot;      
+##  [5] &quot;Erho2.lwr&quot;     &quot;Erho2.upr&quot;     &quot;Phi.lwr&quot;       &quot;Phi.upr&quot;      
+##  [9] &quot;n.q_Erho2.lwr&quot; &quot;n.q_Erho2.upr&quot; &quot;n.q_Phi.lwr&quot;   &quot;n.q_Phi.upr&quot;  
+## [13] &quot;call&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">adhoc3.d$Erho2</code></pre></div>
+<pre><code>##  [1] 0.7347152 0.8470730 0.8925725 0.9172057 0.9326493 0.9432373 0.9509485
+##  [8] 0.9568151 0.9614284 0.9651511</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbind</span>(<span class="dt">lwr =</span> adhoc3.d$n.q_Phi.lwr, <span class="dt">upr =</span> adhoc3.d$n.q_Phi.upr)</code></pre></div>
+<pre><code>##       lwr upr
+##  [1,]  26   7
+##  [2,]  32   9
+##  [3,]  39  11
+##  [4,]  48  13
+##  [5,]  60  16
+##  [6,]  77  21
+##  [7,] 103  28
+##  [8,] 146  39
+##  [9,] 231  62
+## [10,] 487 130</code></pre>
+<p>With all these data we can for instance plot the estimated <span class="math inline">\(\text{E}\hat\rho^2\)</span> score, with a 95% confidence interval, as a function of the number of queries in the collection.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xx &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">10</span>, <span class="dv">200</span>, <span class="dv">5</span>)
+adhoc3.d &lt;-<span class="st"> </span><span class="kw">dstudy</span>(adhoc3.g, <span class="dt">queries =</span> xx)
+<span class="kw">plot</span>(xx, adhoc3.d$Erho2,
+     <span class="dt">yaxs =</span> <span class="st">&quot;i&quot;</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="fl">0.75</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>,
+     <span class="dt">xlab =</span> <span class="st">&quot;Number of queries&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Relative stability&quot;</span>)
+<span class="kw">lines</span>(xx, adhoc3.d$Erho2.lwr) <span class="co"># lower confidence limit</span>
+<span class="kw">lines</span>(xx, adhoc3.d$Erho2.upr) <span class="co"># upper confidence limit</span>
+<span class="kw">grid</span>()</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="mapping-g-theory-onto-data-based-indicators" class="section level2">
+<h2>Mapping G-Theory onto Data-based Indicators</h2>
+<p>Finally, the following functions can be used to map stability indicators from Generalizability Theory onto well-known data-based indicators (see <span class="citation">(Urbano, Marrero, and Martín 2013)</span> for details):</p>
+<ul>
+<li><code>gt2tau</code> and <code>gt2tauAP</code> map <span class="math inline">\(\text{E}\rho^2\)</span> onto Kendall <span class="math inline">\(\tau\)</span> correlation and <span class="math inline">\(AP\)</span> correlation coefficients.</li>
+<li><code>gt2power</code>, <code>gt2minor</code> and <code>gt2major</code> map <span class="math inline">\(\text{E}\rho^2\)</span> onto expected power, minor conflict rate and major conflict rate of 2-tailed t-tests.</li>
+<li><code>gt2asens</code> and <code>gt2rsens</code> map <span class="math inline">\(\text{E}\rho^2\)</span> and <span class="math inline">\(\Phi\)</span> onto absolute and relative sensitivity, respectively.</li>
+<li><code>gt2rmse</code> maps <span class="math inline">\(\Phi\)</span> onto rooted mean squared error.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">gt2tau</span>(<span class="dt">Erho2 =</span> <span class="fl">0.95</span>)</code></pre></div>
+<pre><code>## [1] 0.8641168</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">gt2rsens</span>(<span class="dt">Phi =</span> <span class="fl">0.8</span>)</code></pre></div>
+<pre><code>## [1] 0.1238861</code></pre>
+<p>The results show that the estimated rank correlation at <span class="math inline">\(\text{E}\rho^2=0.95\)</span> is <span class="math inline">\(\hat\tau=0.86412\)</span>, and that the relative sensitivity at <span class="math inline">\(\Phi=0.8\)</span> is estimated as <span class="math inline">\(\hat\delta_r=12.389\%\)</span>. In order to map the stability of a certain D-study, we can simply use the returned <code>dstudy</code> object. These functions can be used for instance to plot the estimated <span class="math inline">\(\hat\tau\)</span> correlation as a function of the query set size.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xx &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">10</span>, <span class="dv">200</span>, <span class="dv">5</span>)
+adhoc3.d &lt;-<span class="st"> </span><span class="kw">dstudy</span>(adhoc3.g, <span class="dt">queries =</span> xx)
+<span class="kw">plot</span>(xx, <span class="kw">gt2tau</span>(adhoc3.d$Erho2),
+     <span class="dt">yaxs =</span> <span class="st">&quot;i&quot;</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>,
+     <span class="dt">xlab =</span> <span class="st">&quot;Number of queries&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Kendall rank correlation&quot;</span>)
+<span class="kw">lines</span>(xx, <span class="kw">gt2tau</span>(adhoc3.d$Erho2.lwr)) <span class="co"># lower confidence limit</span>
+<span class="kw">lines</span>(xx, <span class="kw">gt2tau</span>(adhoc3.d$Erho2.upr)) <span class="co"># upper confidence limit</span>
+<span class="kw">grid</span>()</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAFWCAMAAACGmb7PAAAAaVBMVEUAAAAAADoAAGYAOjoAOpAAZrY6AAA6ADo6AGY6OgA6Ojo6ZmY6kNtmAABmADpmkJBmtrZmtv+QOgCQOmaQkGaQkNuQtpCQ2/+2ZgC2/7a2///T09PbkDrb////tmb/25D//7b//9v///+M2S1RAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAPIklEQVR4nO2di3bbuBGG6a3tbFtpk/V2azWmKVnv/5AlwIvEiCCAwQwJDP//HCU2L0OIn2dwB6orpFrV1gmAZAXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAygXAynUD/PVWWf32k2Bl0McHPut84gGfKGTd5vgU/F32ZDf4RY8XXo4HhkQAcMaA/2RIBLL0lRQP+OvtZc3nQmmKB3xtKgYXRojOOERX9FJ0/HMjVDQIKbsED2YRQvRKAmDlogA+v7YB+ul9nedGqOhQmqbqXqkhuqlMRbhOK2oBcLjdyi+3XUo1qWvoqJ8/Q+9dMgd1CqUXbTf6wqGho8muFF2AhCguPTH6wnw9eOtQ+qCYUMoo5MFCdmO9MlfA2ZaiN5J4lE0S6sGRWi/3JCdokiJNgEVDngBOUnoXStuD1DZVSgC2L0zITwPSG4DzMWUpgC/HQ76dDYzaOP5G8fSYYr9wE3NM2ogrH84Z29EXXv7oys/5NXTQQ/Ty6xTL24W4pvYH94Dr8gEHvk8ewI8UP3h4PigJ8OmWvqWxd8PQWmdjyLYhesVAvBB+13l+9IWDBy/p/O29c3HnENvtAK/0ZrfBOZMO9guvY3P1qf335Biht0mIJr7nmBAdwzXXpsqhnuTOg/sOJ9Md4SqKrQ44wYdo9VUWuySlAj49f9Yv1/Oru7Nh8OAXd1FszYAlFyA3yld9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" /><!-- --></p>
+<p>In any case, the user is strongly advised to take these mappings with a grain of salt (see Fig. 3 in <span class="citation">(Urbano, Marrero, and Martín 2013)</span>).</p>
+<div id="acknowledgements" class="section level3">
+<h3>Acknowledgements</h3>
+<p>This work was supported by an A4U postdoctoral grant and a Juan de la Cierva postdoctoral fellowship.</p>
+</div>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-Brennan2001">
+<p>Brennan, Robert L. 2001. <em>Generalizability Theory</em>. Springer.</p>
+</div>
+<div id="ref-Urbano2013">
+<p>Urbano, Julián, Mónica Marrero, and Diego Martín. 2013. “On the Measurement of Test Collection Reliability.” In <em>International Acm Sigir Conference on Research and Development in Information Retrieval</em>, 393–402.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>For general information on how to read data in <code>R</code>, the reader is referred to the <a href="https://cran.r-project.org/manuals.html">R Data Import/Export manual</a>.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Recall that <span class="math inline">\(100(1-2\alpha)\%\)</span> intervals are computed, so for an 80% confidence interval we set <span class="math inline">\(\alpha=0.1\)</span>.<a href="#fnref2">↩</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
